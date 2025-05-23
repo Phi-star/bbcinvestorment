@@ -28,6 +28,13 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'none';
     });
 
+    // Close modal when clicking outside of it
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
     // Check if user is already logged in
     checkLoggedIn();
 
@@ -38,10 +45,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const username = document.getElementById('signupUsername').value;
         const email = document.getElementById('signupEmail').value;
         const password = document.getElementById('signupPassword').value;
-        const bankAccountName = document.getElementById('bankAccountName').value;
         
         // Validate inputs
-        if (!username || !email || !password || !bankAccountName) {
+        if (!username || !email || !password) {
             showModal('Error', 'Please fill in all fields');
             return;
         }
@@ -52,14 +58,26 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // Validate email format
+        if (!validateEmail(email)) {
+            showModal('Error', 'Please enter a valid email address');
+            return;
+        }
+        
+        // Validate password strength
+        if (password.length < 6) {
+            showModal('Error', 'Password must be at least 6 characters');
+            return;
+        }
+        
         // Save user data to localStorage
         const user = {
             username,
             email,
             password,
-            bankAccountName,
             tasksCompleted: 0,
-            earnings: 0
+            earnings: 0,
+            createdAt: new Date().toISOString()
         };
         
         localStorage.setItem(username, JSON.stringify(user));
@@ -113,4 +131,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('modalMessage').textContent = message;
         modal.style.display = 'block';
     }
-})
+
+    // Helper function to validate email format
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+});
