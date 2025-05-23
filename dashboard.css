@@ -40,17 +40,6 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.header-content {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.logo {
-    height: 50px;
-    width: auto;
-}
-
 .dashboard-header h1 {
     font-size: 1.8rem;
     font-weight: 600;
@@ -466,7 +455,50 @@ body {
     background-color: var(--secondary-color);
 }
 
-/* Investment Options Modal */
+/* Approval Modal Styles */
+.approval-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.approve-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    flex: 1;
+}
+
+.decline-btn {
+    background-color: #dc3545;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    flex: 1;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+.decline-btn:hover {
+    background-color: #c82333;
+}
+
+#approvalStatus {
+    margin-top: 1rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Investment Options */
 .investment-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -539,6 +571,10 @@ body {
     
     .investment-options {
         grid-template-columns: 1fr;
+    }
+    
+    .approval-buttons {
+        flex-direction: column;
     }
     
     .trading-stats {
