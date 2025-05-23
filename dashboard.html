@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBC INVESTMENT | Smart Trading Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <!-- Withdrawal Modal -->
+    <div class="modal" id="withdrawalModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Withdraw Earnings</h2>
+            <div id="withdrawalForm">
+                <div class="form-group">
+                    <label for="withdrawAmount">Amount to Withdraw ($100 minimum)</label>
+                    <input type="number" id="withdrawAmount" placeholder="Enter amount" min="100">
+                </div>
+                <div class="form-group">
+                    <label for="passcode">Enter Security PIN</label>
+                    <input type="password" id="passcode" placeholder="Enter your 4-digit PIN" maxlength="4" pattern="\d{4}">
+                    <p class="hint">Forgot PIN? <a href="#" id="resetPinLink">Reset your PIN</a></p>
+                </div>
+                <button id="confirmWithdraw" class="submit-btn">Process Withdrawal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIN Creation Modal -->
+    <div class="modal" id="pinModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Create Your Security PIN</h2>
+            <div id="pinForm">
+                <div class="form-group">
+                    <label for="newPin">Enter 4-digit PIN</label>
+                    <input type="password" id="newPin" placeholder="0000" maxlength="4" pattern="\d{4}">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPin">Confirm 4-digit PIN</label>
+                    <input type="password" id="confirmPin" placeholder="0000" maxlength="4" pattern="\d{4}">
+                    <p class="error-message" id="pinError"></p>
+                </div>
+                <button id="savePinBtn" class="submit-btn">Save PIN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Investment Modal -->
+    <div class="modal" id="investmentModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Start Investing</h2>
+            <div class="investment-options">
+                <div class="option-card" data-amount="10">
+                    <h3>Starter Plan</h3>
+                    <p class="amount">$10 / ₦10,000</p>
+                    <p class="returns">Returns: $15-20 / ₦15,000-20,000</p>
+                    <button class="invest-btn" data-link="#">Invest Now</button>
+                </div>
+                <div class="option-card" data-amount="50">
+                    <h3>Silver Plan</h3>
+                    <p class="amount">$50 / ₦50,000</p>
+                    <p class="returns">Returns: $80-100 / ₦80,000-100,000</p>
+                    <button class="invest-btn" data-link="#">Invest Now</button>
+                </div>
+                <div class="option-card" data-amount="100">
+                    <h3>Gold Plan</h3>
+                    <p class="amount">$100 / ₦100,000</p>
+                    <p class="returns">Returns: $150-200 / ₦150,000-200,000</p>
+                    <button class="invest-btn" data-link="#">Invest Now</button>
+                </div>
+                <div class="option-card" data-amount="200">
+                    <h3>Premium Plan</h3>
+                    <p class="amount">$200 / ₦200,000</p>
+                    <p class="returns">Returns: $300-400 / ₦300,000-400,000</p>
+                    <button class="invest-btn" data-link="#">Invest Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <img src="bbc-logo.png" alt="BBC INVESTMENT" class="logo">
+                <div>
+                    <h1>Welcome to <span class="highlight">BBC INVESTMENT</span></h1>
+                    <p class="welcome-message">Your trusted platform for smart investments and financial growth</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="user-welcome">Hello, <span id="usernameDisplay">Investor</span>!</span>
+                <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <div class="investment-overview">
+            <div class="balance-card">
+                <div class="balance-info">
+                    <h3>Your Investment Portfolio</h3>
+                    <h2 id="currentBalance">$0.00 / ₦0.00</h2>
+                    <div class="profit-indicator">
+                        <span id="profitStatus">+0.00% Today</span>
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="balance-actions">
+                    <button id="investBtn" class="action-btn invest-cta">
+                        <i class="fas fa-coins"></i> Invest Now
+                    </button>
+                    <button id="withdrawBtn" class="action-btn">
+                        <i class="fas fa-wallet"></i> Withdraw
+                    </button>
+                    <button id="managePinBtn" class="action-btn">
+                        <i class="fas fa-key"></i> Manage PIN
+                    </button>
+                </div>
+            </div>
+
+            <div class="live-trading">
+                <h3><i class="fas fa-bolt"></i> Live Trading Activity</h3>
+                <div class="trading-chart" id="tradingChart">
+                    <div class="chart-placeholder">
+                        <p>Your investments are actively being traded in global markets</p>
+                        <div class="trading-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Active Trades</span>
+                                <span class="stat-value" id="activeTrades">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Today's Profit</span>
+                                <span class="stat-value" id="dailyProfit">$0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Total ROI</span>
+                                <span class="stat-value" id="totalROI">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="investment-plans">
+            <h2><i class="fas fa-star"></i> Recommended Investment Plans</h2>
+            <div class="plans-container">
+                <div class="plan-card">
+                    <h3>Basic Plan</h3>
+                    <p class="plan-amount">$10 / ₦10,000</p>
+                    <p class="plan-duration">7-day cycle</p>
+                    <p class="plan-returns">Returns: 50-100%</p>
+                    <button class="plan-invest-btn" data-amount="10">Invest Now</button>
+                </div>
+                <div class="plan-card featured">
+                    <div class="popular-badge">MOST POPULAR</div>
+                    <h3>Standard Plan</h3>
+                    <p class="plan-amount">$50 / ₦50,000</p>
+                    <p class="plan-duration">7-day cycle</p>
+                    <p class="plan-returns">Returns: 60-120%</p>
+                    <button class="plan-invest-btn" data-amount="50">Invest Now</button>
+                </div>
+                <div class="plan-card">
+                    <h3>Premium Plan</h3>
+                    <p class="plan-amount">$100 / ₦100,000</p>
+                    <p class="plan-duration">7-day cycle</p>
+                    <p class="plan-returns">Returns: 75-150%</p>
+                    <button class="plan-invest-btn" data-amount="100">Invest Now</button>
+                </div>
+                <div class="plan-card">
+                    <h3>VIP Plan</h3>
+                    <p class="plan-amount">$200 / ₦200,000</p>
+                    <p class="plan-duration">7-day cycle</p>
+                    <p class="plan-returns">Returns: 100-200%</p>
+                    <button class="plan-invest-btn" data-amount="200">Invest Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="transaction-history">
+            <h2><i class="fas fa-history"></i> Investment History</h2>
+            <table id="transactionsTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Plan</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Returns</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Transactions will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="dashboard-footer">
+        <p>© 2025 BBC INVESTMENT. All rights reserved.</p>
+        <p>Secure trading platform with 256-bit encryption</p>
+    </footer>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
