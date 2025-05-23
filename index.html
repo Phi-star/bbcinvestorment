@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBC Investments | Create Your Account</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form id="signupForm">
+                <h1>Join BBC Investments</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>or register with your email</span>
+                <input type="text" id="signupUsername" placeholder="Full Name" required />
+                <input type="email" id="signupEmail" placeholder="Email Address" required />
+                <input type="password" id="signupPassword" placeholder="Create Password" required />
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form id="loginForm">
+                <h1>Sign in to BBC Investments</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>or sign in with your details</span>
+                <input type="text" id="loginUsername" placeholder="Full Name" required />
+                <input type="password" id="loginPassword" placeholder="Password" required />
+                <div class="form-footer">
+                    <a href="#" class="forgot-password">Forgot your password?</a>
+                    <p class="signup-prompt">Don't have an account? <a href="#" id="showSignUp">Sign Up</a></p>
+                </div>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>To continue investing with us, please log in to your account</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Join BBC Investments</h1>
+                    <p>Create your account and start building your financial future with us</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Account Created!</h2>
+            <p id="modalMessage">Welcome to BBC Investments. You can now log in to begin.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+      </html>
