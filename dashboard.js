@@ -24,9 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Investment plan links (REPLACE THESE WITH YOUR ACTUAL LINKS)
     const investmentLinks = {
-        starter: "YOUR_INVESTMENT_LINK_HERE?plan=starter",
-        silver: "YOUR_INVESTMENT_LINK_HERE?plan=silver",
-        gold: "YOUR_INVESTMENT_LINK_HERE?plan=gold",
+        starter: "https://selar.com/0v1thj",
+        silver: "https://selar.com/951440",
+        gold: "https://selar.com/p715m7",
         platinum: "YOUR_INVESTMENT_LINK_HERE?plan=platinum"
     };
 
