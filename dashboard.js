@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const investmentLinks = {
         starter: "https://selar.com/0v1thj",
         silver: "https://selar.com/951440",
-        gold: "https://selar.com/p715m7",
-        platinum: "YOUR_INVESTMENT_LINK_HERE?plan=platinum"
+        gold: "https://selar.com/951440",
+        platinum: "https://selar.com/p715m7"
     };
 
     // Initialize dashboard
